@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
@@ -23,11 +24,26 @@ public class ForensicTool {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
-        Scanner sc=new Scanner(System.in);
-    System.out.println("Enter the drive number. e.g 0,1,2..");
-    int dr=sc.nextInt();
-    String driveName="\\\\.\\PhysicalDrive"+dr;
-        System.out.println(driveName);
+        
+        //Pysical Drive Number Input
+    Scanner sc=new Scanner(System.in);
+    StringBuilder DriveName = new StringBuilder();
+    int dr;
+    System.out.println("Enter the PhysicalDrive number. e.g 0,1,2..");
+    try{
+    dr=sc.nextInt();
+    DriveName.append("\\\\.\\PhysicalDrive"+dr);
+    }
+    catch (InputMismatchException a){
+
+    System.out.println("Drive Number Format is incorrect");
+    System.exit(0);
+
+}
+    String driveName=DriveName.toString();
+    System.out.println(driveName);
+    
+    
         //Boot Sector Input                                                                
 String[] parts=diskRead(0,driveName);//diskRead is a function that reads from disk and returns a sector in an array
 
