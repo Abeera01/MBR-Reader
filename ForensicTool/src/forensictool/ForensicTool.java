@@ -23,12 +23,17 @@ public class ForensicTool {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
-        
+        Scanner sc=new Scanner(System.in);
+    System.out.println("Enter the drive number. e.g 0,1,2..");
+    int dr=sc.nextInt();
+    String driveName="\\\\.\\PhysicalDrive"+dr;
         //Boot Sector Input                                                                
-String[] parts=diskRead(0);//diskRead is a function that reads from disk and returns a sector in an array
+String[] parts=diskRead(0,driveName);//diskRead is a function that reads from disk and returns a sector in an array
 
-
-
+if((parts[450].equals("EE")) || (parts[450].equals("ee"))){
+    System.out.println("The Drive does not have MBR partitioning Style");
+}
+else{
         //Partition Details
  System.out.println("          ---MBR Partition Table: Entry 1---");
  partitionType(parts[450]);//patitionType is a function which tells partition type
@@ -132,7 +137,7 @@ String[] parts=diskRead(0);//diskRead is a function that reads from disk and ret
      System.out.println("          ---Extended Partitions---");
      do{
      System.out.println("Extended partition "+i);
- parts=diskRead((start4)*512);
+ parts=diskRead((start4)*512,driveName);
  partitionType(parts[450]);//patition type
  newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
  int st1=sector(newArray)+start4;
@@ -157,7 +162,7 @@ String[] parts=diskRead(0);//diskRead is a function that reads from disk and ret
 size=(((a+b+c+d)*512)/1024)/1024;
         System.out.println("Total Disk Size: "+size+" MB");
 } 
-   
+    }
     
 public static String[] reverse(String[] validData){
     for(int i = 0; i < validData.length / 2; i++)
@@ -267,6 +272,8 @@ public static void partitionType(String s){
  }
  else if(s.equals("0c")){ System.out.println("Partition Type: FAT32");
  }
+ else if(s.equals("0e")){ System.out.println("Partition Type: FAT");
+ }
  else if(s.equals("05")){ System.out.println("Partition Type: Extended");}
  else { System.out.println("No Partition Entry");
  }
@@ -301,23 +308,30 @@ public static String bytesToHex(byte[] in) {
 }
 
 
-public static String[] diskRead(int n) throws FileNotFoundException, IOException{
+public static String[] diskRead(int n, String driveName) throws FileNotFoundException, IOException{
+//    Runtime rt = Runtime.getRuntime();
+//    Process pr = rt.exec("wmic diskdrive list brief > mDisks.txt");
     String s;
 RandomAccessFile raf = null;
-
-        raf = new RandomAccessFile("\\\\.\\PhysicalDrive1","r");
+StringBuilder result = new StringBuilder();
+try{
+        raf = new RandomAccessFile(driveName,"r");
         byte [] block = new byte [512];
         raf.seek(n); //Starting point from where disk reading should begin
         raf.readFully(block);
         s=bytesToHex(block); // bytesToHex() converts bytes data to HEX
-    StringBuilder result = new StringBuilder();
-for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < s.length(); i++) {
    if (i > 0 && i%2==0) {
       result.append(" ");
     }
    result.append(s.charAt(i));
 }
-s=result.toString();
+}
+catch(FileNotFoundException e)
+{System.out.println("No Such drive exists");
+System.exit(0);
+}
+        s=result.toString();
                                                                                               
 String[] parts = s.split(" ");
 return parts;
