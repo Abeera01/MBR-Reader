@@ -27,6 +27,7 @@ public class ForensicTool {
     System.out.println("Enter the drive number. e.g 0,1,2..");
     int dr=sc.nextInt();
     String driveName="\\\\.\\PhysicalDrive"+dr;
+        System.out.println(driveName);
         //Boot Sector Input                                                                
 String[] parts=diskRead(0,driveName);//diskRead is a function that reads from disk and returns a sector in an array
 
