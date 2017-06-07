@@ -65,6 +65,7 @@ else{
  newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
  if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF"))
      //For partitions which begin or end beyond  the 1024th cylinder, the three CHS bytes should always be filled with: FE FF FF
+     //Now using starting LBA and partition size to calculate the starting and ending sector
  {
      String[] newArray1=Arrays.copyOfRange(parts, 454, 458);//Starting LBA
      start1=(hex2decimal(optimize(reverse(newArray1))));
@@ -77,7 +78,11 @@ else{
  else{
  start1=sector(newArray);// sector is the function which returns the exact sector number
  newArray = Arrays.copyOfRange(parts, 451, 454);//ending chs
- end1=sector(newArray);
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     end1=(start1+a)-1;
+ }
+ else{
+ end1=sector(newArray);}
  System.out.println("Starting sector: "+start1);
  System.out.println("Ending sector: "+end1);
  System.out.println("Partition Size: "+size+" MB");
@@ -106,9 +111,14 @@ else{
 else{
  start2=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 467, 470);//ending chs
- end2=sector(newArray);
-
- if(!(parts[466].equals("00"))){
+ 
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     end2=(start2+b)-1;
+ }
+ else{
+ end2=sector(newArray);}
+if(!(parts[466].equals("00")))
+ {
  System.out.println("Starting sector: "+start2);
  System.out.println("Ending sector: "+end2);
  System.out.println("Partition Size: "+size+" MB");}
@@ -137,7 +147,11 @@ else{
  else{
  start3=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 483, 486);//ending chs
- end3=sector(newArray);
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     end3=(start3+c)-1;
+ }
+ else{
+ end3=sector(newArray);}
  if(!(parts[482].equals("00"))){
  System.out.println("Starting sector: "+start3);
  System.out.println("Ending sector: "+end3);
@@ -166,7 +180,11 @@ else{
  else{
  start4=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 499, 502);//ending chs
- end4=sector(newArray);
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     end4=(start4+d)-1;
+ }
+ else{
+ end4=sector(newArray);}
  if(!(parts[498].equals("00"))){
  System.out.println("Starting sector: "+start4);
  System.out.println("Ending sector: "+end4);
@@ -176,11 +194,11 @@ else{
  
  
  //MBR is corrupted or Uncorrupted???
- if(!(start2==end2)){//checks is there any other partition or there is just one partition?
+ if(!(start2==end2 && start2==0 && end2==0)){//checks is there any other partition or there is just one partition?
      if(start2==(end1+1)){
-         if(!(start3==end3)){//checks is there any other partition or there are just two partitions?
+         if(!(start3==end3 && start3==0 && end3==0)){//checks is there any other partition or there are just two partitions?
              if(start3==(end2+1)){
-                 if(!(start4==end4)){//checks is there any other partition or there are just three partitions?
+                 if(!(start4==end4 && start4==0 && end4==0)){//checks is there any other partition or there are just three partitions?
                      if(start4==(end3+1)){
                          System.out.println("MBR is Uncorrupted \n");
                      }else System.out.println("MBR is Corrupted \n");
@@ -207,7 +225,7 @@ else{
  newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
  if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
      String[] newArray1=Arrays.copyOfRange(parts, 454, 458);//Starting LBA
-     st1=(hex2decimal(optimize(reverse(newArray1))));
+     st1=(hex2decimal(optimize(reverse(newArray1))))+start4;
      System.out.println("Starting sector: "+st1);
      en1=(st1+a1)-1;
      System.out.println("Ending sector: "+en1);
@@ -218,7 +236,11 @@ else{
  st1=sector(newArray)+start4;
  System.out.println("Starting sector: "+st1);
  newArray = Arrays.copyOfRange(parts, 451, 454);//ending chs
- en1=sector(newArray)+start4;
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     en1=((st1+a1)-1);
+ }
+ else{
+ en1=sector(newArray)+start4;}
  System.out.println("Ending sector: "+en1);
         System.out.println("Partition Size: "+size+" MB");
         System.out.println("\n"); 
