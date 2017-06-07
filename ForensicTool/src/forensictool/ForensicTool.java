@@ -63,7 +63,9 @@ else{
  long a=hex2decimal(s1); //coversion of hexadecimal to decimal
  long size=(((a)*512)/1024)/1024;
  newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
- if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF"))
+     //For partitions which begin or end beyond  the 1024th cylinder, the three CHS bytes should always be filled with: FE FF FF
+ {
      String[] newArray1=Arrays.copyOfRange(parts, 454, 458);//Starting LBA
      start1=(hex2decimal(optimize(reverse(newArray1))));
      System.out.println("Starting sector: "+start1);
