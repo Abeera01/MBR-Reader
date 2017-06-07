@@ -49,87 +49,128 @@ public class ForensicTool {
 String[] parts=diskRead(0,driveName);//diskRead is a function that reads from disk and returns a sector in an array
 
 if((parts[450].equals("EE")) || (parts[450].equals("ee"))){
-    System.out.println("The Drive does not have MBR partitioning Style");
+    System.out.println("The Drive does not have MBR partitioning Style. It has GPT Partitioning Style");
 }
 else{
         //Partition Details
  System.out.println("          ---MBR Partition Table: Entry 1---");
+ long start1,end1,start2,end2,start3,end3,start4,end4,st1,en1;
  partitionType(parts[450]);//patitionType is a function which tells partition type
- String[] newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
- long start1=sector(newArray);// sector is the function which returns the exact sector number
- System.out.println("Starting sector: "+start1);
- newArray = Arrays.copyOfRange(parts, 451, 454);//ending chs
- long end1=sector(newArray);
- System.out.println("Ending sector: "+end1);
- newArray = Arrays.copyOfRange(parts, 458, 462);//partition size
+ String[] newArray = Arrays.copyOfRange(parts, 458, 462);//partition size
  String s1=optimize(reverse(newArray));
- 
- //optimize is the function which removes the extra special characters from newArray that ae added due to copyOfRange() function
+  //optimize is the function which removes the extra special characters from newArray that ae added due to copyOfRange() function
  //reverse is the function which reverses the newArray so that size can be calculated
- 
  long a=hex2decimal(s1); //coversion of hexadecimal to decimal
  long size=(((a)*512)/1024)/1024;
-        System.out.println("Partition Size: "+size+" MB");
-        System.out.println("\n");
+ newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     String[] newArray1=Arrays.copyOfRange(parts, 454, 458);//Starting LBA
+     start1=(hex2decimal(optimize(reverse(newArray1))));
+     System.out.println("Starting sector: "+start1);
+     end1=(start1+a)-1;
+     System.out.println("Ending sector: "+end1);
+     System.out.println("Partition Size: "+size+" MB");
+     System.out.println("\n");
+ }
+ else{
+ start1=sector(newArray);// sector is the function which returns the exact sector number
+ newArray = Arrays.copyOfRange(parts, 451, 454);//ending chs
+ end1=sector(newArray);
+ System.out.println("Starting sector: "+start1);
+ System.out.println("Ending sector: "+end1);
+ System.out.println("Partition Size: "+size+" MB");
+ System.out.println("\n");
+}
         
         
         
  
  System.out.println("          ---MBR Partition Table: Entry 2---");
  partitionType(parts[466]);//partition type
- newArray = Arrays.copyOfRange(parts, 463, 466);//starting chs
- long start2=sector(newArray);
- newArray = Arrays.copyOfRange(parts, 467, 470);//ending chs
- long end2=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 474, 478);//partition size
  s1=optimize(reverse(newArray));
  long b=hex2decimal(s1);
  size=(((b)*512)/1024)/1024;
+ newArray = Arrays.copyOfRange(parts, 463, 466);//starting chs
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     String[] newArray1=Arrays.copyOfRange(parts, 470, 474);//Starting LBA
+     start2=(hex2decimal(optimize(reverse(newArray1))));
+     System.out.println("Starting sector: "+start2);
+     end2=(start2+b)-1;
+     System.out.println("Ending sector: "+end2);
+     System.out.println("Partition Size: "+size+" MB");
+     System.out.println("\n");
+ }
+else{
+ start2=sector(newArray);
+ newArray = Arrays.copyOfRange(parts, 467, 470);//ending chs
+ end2=sector(newArray);
+
  if(!(parts[466].equals("00"))){
  System.out.println("Starting sector: "+start2);
  System.out.println("Ending sector: "+end2);
  System.out.println("Partition Size: "+size+" MB");}
  System.out.println("\n");
  
- 
+        }
  
  
  
  System.out.println("          ---MBR Partition Table: Entry 3---");
  partitionType(parts[482]);//partition type
- newArray = Arrays.copyOfRange(parts, 479, 482);//starting chs
- long start3=sector(newArray);
- newArray = Arrays.copyOfRange(parts, 483, 486);//ending chs
- long end3=sector(newArray);
-  newArray = Arrays.copyOfRange(parts, 490, 494);//partition size
+ newArray = Arrays.copyOfRange(parts, 490, 494);//partition size
  s1=optimize(reverse(newArray));
  long c=hex2decimal(s1);
  size=(((c)*512)/1024)/1024;
+ newArray = Arrays.copyOfRange(parts, 479, 482);//starting chs
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     String[] newArray1=Arrays.copyOfRange(parts, 486, 490);//Starting LBA
+     start3=(hex2decimal(optimize(reverse(newArray1))));
+     System.out.println("Starting sector: "+start3);
+     end3=(start3+c)-1;
+     System.out.println("Ending sector: "+end3);
+     System.out.println("Partition Size: "+size+" MB");
+     System.out.println("\n");
+ }
+ else{
+ start3=sector(newArray);
+ newArray = Arrays.copyOfRange(parts, 483, 486);//ending chs
+ end3=sector(newArray);
  if(!(parts[482].equals("00"))){
  System.out.println("Starting sector: "+start3);
  System.out.println("Ending sector: "+end3);
  System.out.println("Partition Size: "+size+" MB");}
  System.out.println("\n");
  
- 
+ }
  
  
  System.out.println("          ---MBR Partition Table: Entry 4---");
  partitionType(parts[498]);// partition type
- newArray = Arrays.copyOfRange(parts, 495, 498);//starting chs
- long start4=sector(newArray);
- newArray = Arrays.copyOfRange(parts, 499, 502);//ending chs
- long end4=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 506, 510);//partition size
  s1=optimize(reverse(newArray));
  long d=hex2decimal(s1);
  size=(((d)*512)/1024)/1024;
+ newArray = Arrays.copyOfRange(parts, 495, 498);//starting chs
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     String[] newArray1=Arrays.copyOfRange(parts, 502, 506);//Starting LBA
+     start4=(hex2decimal(optimize(reverse(newArray1))));
+     System.out.println("Starting sector: "+start4);
+     end4=(start4+d)-1;
+     System.out.println("Ending sector: "+end4);
+     System.out.println("Partition Size: "+size+" MB");
+     System.out.println("\n");
+ }
+ else{
+ start4=sector(newArray);
+ newArray = Arrays.copyOfRange(parts, 499, 502);//ending chs
+ end4=sector(newArray);
  if(!(parts[498].equals("00"))){
  System.out.println("Starting sector: "+start4);
  System.out.println("Ending sector: "+end4);
  System.out.println("Partition Size: "+size+" MB");}
  System.out.println("\n");
- 
+ }
  
  
  //MBR is corrupted or Uncorrupted???
@@ -157,18 +198,29 @@ else{
      System.out.println("Extended partition "+i);
  parts=diskRead((start4)*512,driveName);
  partitionType(parts[450]);//patition type
- newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
- long st1=sector(newArray)+start4;
- System.out.println("Starting sector: "+st1);
- newArray = Arrays.copyOfRange(parts, 451, 454);//ending chs
- long en1=sector(newArray)+start4;
- System.out.println("Ending sector: "+en1);
  newArray = Arrays.copyOfRange(parts, 458, 462);//partition size
  s1=optimize(reverse(newArray));
  long a1=hex2decimal(s1);
  size=(((a1)*512)/1024)/1024;
+ newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
+ if(newArray[0].equals("FE") && newArray[1].equals("FF") && newArray[2].equals("FF")){
+     String[] newArray1=Arrays.copyOfRange(parts, 454, 458);//Starting LBA
+     st1=(hex2decimal(optimize(reverse(newArray1))));
+     System.out.println("Starting sector: "+st1);
+     en1=(st1+a1)-1;
+     System.out.println("Ending sector: "+en1);
+     System.out.println("Partition Size: "+size+" MB");
+     System.out.println("\n");
+ }
+ else{
+ st1=sector(newArray)+start4;
+ System.out.println("Starting sector: "+st1);
+ newArray = Arrays.copyOfRange(parts, 451, 454);//ending chs
+ en1=sector(newArray)+start4;
+ System.out.println("Ending sector: "+en1);
         System.out.println("Partition Size: "+size+" MB");
         System.out.println("\n"); 
+ }
         i++;
         start4=en1+1;
      }while(parts[466].equals("05"));
