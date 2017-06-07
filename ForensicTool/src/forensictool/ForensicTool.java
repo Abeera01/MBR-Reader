@@ -24,7 +24,8 @@ public class ForensicTool {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         // TODO code application logic here
-        
+    System.out.println("             ----MBR READER----");
+    System.out.println("RUN THIS PROGRAM WITH ADMINISTRATOR RIGHTS");
         //Pysical Drive Number Input
     Scanner sc=new Scanner(System.in);
     StringBuilder DriveName = new StringBuilder();
@@ -55,10 +56,10 @@ else{
  System.out.println("          ---MBR Partition Table: Entry 1---");
  partitionType(parts[450]);//patitionType is a function which tells partition type
  String[] newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
- int start1=sector(newArray);// sector is the function which returns the exact sector number
+ long start1=sector(newArray);// sector is the function which returns the exact sector number
  System.out.println("Starting sector: "+start1);
  newArray = Arrays.copyOfRange(parts, 451, 454);//ending chs
- int end1=sector(newArray);
+ long end1=sector(newArray);
  System.out.println("Ending sector: "+end1);
  newArray = Arrays.copyOfRange(parts, 458, 462);//partition size
  String s1=optimize(reverse(newArray));
@@ -66,8 +67,8 @@ else{
  //optimize is the function which removes the extra special characters from newArray that ae added due to copyOfRange() function
  //reverse is the function which reverses the newArray so that size can be calculated
  
- int a=hex2decimal(s1); //coversion of hexadecimal to decimal
- int size=(((a)*512)/1024)/1024;
+ long a=hex2decimal(s1); //coversion of hexadecimal to decimal
+ long size=(((a)*512)/1024)/1024;
         System.out.println("Partition Size: "+size+" MB");
         System.out.println("\n");
         
@@ -77,12 +78,12 @@ else{
  System.out.println("          ---MBR Partition Table: Entry 2---");
  partitionType(parts[466]);//partition type
  newArray = Arrays.copyOfRange(parts, 463, 466);//starting chs
- int start2=sector(newArray);
+ long start2=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 467, 470);//ending chs
- int end2=sector(newArray);
+ long end2=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 474, 478);//partition size
  s1=optimize(reverse(newArray));
- int b=hex2decimal(s1);
+ long b=hex2decimal(s1);
  size=(((b)*512)/1024)/1024;
  if(!(parts[466].equals("00"))){
  System.out.println("Starting sector: "+start2);
@@ -97,12 +98,12 @@ else{
  System.out.println("          ---MBR Partition Table: Entry 3---");
  partitionType(parts[482]);//partition type
  newArray = Arrays.copyOfRange(parts, 479, 482);//starting chs
- int start3=sector(newArray);
+ long start3=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 483, 486);//ending chs
- int end3=sector(newArray);
+ long end3=sector(newArray);
   newArray = Arrays.copyOfRange(parts, 490, 494);//partition size
  s1=optimize(reverse(newArray));
- int c=hex2decimal(s1);
+ long c=hex2decimal(s1);
  size=(((c)*512)/1024)/1024;
  if(!(parts[482].equals("00"))){
  System.out.println("Starting sector: "+start3);
@@ -116,12 +117,12 @@ else{
  System.out.println("          ---MBR Partition Table: Entry 4---");
  partitionType(parts[498]);// partition type
  newArray = Arrays.copyOfRange(parts, 495, 498);//starting chs
- int start4=sector(newArray);
+ long start4=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 499, 502);//ending chs
- int end4=sector(newArray);
+ long end4=sector(newArray);
  newArray = Arrays.copyOfRange(parts, 506, 510);//partition size
  s1=optimize(reverse(newArray));
- int d=hex2decimal(s1);
+ long d=hex2decimal(s1);
  size=(((d)*512)/1024)/1024;
  if(!(parts[498].equals("00"))){
  System.out.println("Starting sector: "+start4);
@@ -157,14 +158,14 @@ else{
  parts=diskRead((start4)*512,driveName);
  partitionType(parts[450]);//patition type
  newArray = Arrays.copyOfRange(parts, 447, 450);//starting chs
- int st1=sector(newArray)+start4;
+ long st1=sector(newArray)+start4;
  System.out.println("Starting sector: "+st1);
  newArray = Arrays.copyOfRange(parts, 451, 454);//ending chs
- int en1=sector(newArray)+start4;
+ long en1=sector(newArray)+start4;
  System.out.println("Ending sector: "+en1);
  newArray = Arrays.copyOfRange(parts, 458, 462);//partition size
  s1=optimize(reverse(newArray));
- int a1=hex2decimal(s1);
+ long a1=hex2decimal(s1);
  size=(((a1)*512)/1024)/1024;
         System.out.println("Partition Size: "+size+" MB");
         System.out.println("\n"); 
@@ -219,6 +220,7 @@ public static int hex2decimal(String s) {
 public static String hex2binary(String s) {
 String result = "";
 String binVal;
+s=s.toUpperCase();
     for (int i = 0; i < s.length(); i++) {
         char hexChar = s.charAt(i);
 
@@ -287,18 +289,35 @@ public static void partitionType(String s){
    
  if(s.equals("07")){ System.out.println("Partition Type: NTFS");
  }
- else if(s.equals("0c")){ System.out.println("Partition Type: FAT32");
+ else if(s.equals("0C")){ System.out.println("Partition Type: FAT32, INT 13 Extensions");
  }
- else if(s.equals("0e")){ System.out.println("Partition Type: FAT");
+ else if(s.equals("0B")){ System.out.println("Partition Type: FAT32");
  }
- else if(s.equals("05")){ System.out.println("Partition Type: Extended");}
- else { System.out.println("No Partition Entry");
+ else if(s.equals("06")){ System.out.println("Partition Type: FAT16");
+ }
+ else if(s.equals("0E")){ System.out.println("Partition Type: FAT");
+ }
+ else if(s.equals("27")){ System.out.println("Partition Type: Reserved");
+ }
+ else if(s.equals("82")){ System.out.println("Partition Type: Linux Swap partition");
+ }
+ else if(s.equals("83")){ System.out.println("Partition Type: Linux native file systems");
+ }
+ else if(s.equals("42")){ System.out.println("Partition Type: Secure File System");
+ }
+ else if(s.equals("05")){ System.out.println("Partition Type: Extended");
+ }
+ else if(s.equals("0F")){ System.out.println("Partition Type: Extended, INT 13 Extensions ");
+ }
+ else if(s.equals("00")){ System.out.println("Empty Partition Entry");
+ }
+ else { System.out.println("Unknown Partitioning Style");
  }
 }
 
 
 
-public static int sector(String[] newArray){
+public static long sector(String[] newArray){
     String hexVar = newArray[1];
     if(hexVar.compareTo("40")<0){ // When sector value is less than 40
     return ((((hex2decimal(newArray[2])*255)+hex2decimal(newArray[0]))*63)+(hex2decimal(newArray[1])-1));// returns sector number
@@ -325,7 +344,7 @@ public static String bytesToHex(byte[] in) {
 }
 
 
-public static String[] diskRead(int n, String driveName) throws FileNotFoundException, IOException{
+public static String[] diskRead(long n, String driveName) throws FileNotFoundException, IOException{
 //    Runtime rt = Runtime.getRuntime();
 //    Process pr = rt.exec("wmic diskdrive list brief > mDisks.txt");
     String s;
@@ -349,6 +368,7 @@ catch(FileNotFoundException e)
 System.exit(0);
 }
         s=result.toString();
+        s=s.toUpperCase();
                                                                                               
 String[] parts = s.split(" ");
 return parts;
