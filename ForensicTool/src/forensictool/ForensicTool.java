@@ -52,6 +52,9 @@ String[] parts=diskRead(0,driveName);//diskRead is a function that reads from di
 
 if((parts[450].equals("EE")) || (parts[450].equals("ee"))){
     System.out.println("The Drive does not have MBR partitioning Style. It has GPT Partitioning Style");
+    System.out.println("Press Enter to Exit");
+        System.in.read();
+        System.exit(0);
 }
 else{
         //Partition Details
