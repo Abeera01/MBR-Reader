@@ -94,7 +94,7 @@ else{
  
  System.out.println("          ---MBR Partition Table: Entry 2---");
  partitionType(parts[466]);//partition type
- newArray = Arrays.copyOfRange(parts, 474, 478);//partition size
+ newArray = Arrays.copyOfRange(parts, 474, 478);//partition size474, 478467, 470
  s1=optimize(reverse(newArray));
  long b=hex2decimal(s1);
  size=(((b)*512)/1024)/1024;
@@ -191,21 +191,33 @@ if(!(parts[466].equals("00")))
  System.out.println("Partition Size: "+size+" MB");}
  System.out.println("\n");
  }
- 
+ String str1,str2;
  
  //MBR is corrupted or Uncorrupted???
- if(!(start2==end2 && start2==0 && end2==0)){//checks is there any other partition or there is just one partition?
-     if(start2==(end1+1)){
-         if(!(start3==end3 && start3==0 && end3==0)){//checks is there any other partition or there are just two partitions?
+ if(!(start2==0 && end2==0)){//checks is there any other partition or there is just one partition?
+     newArray = Arrays.copyOfRange(parts, 463, 466); String[] newArray1=Arrays.copyOfRange(parts, 467, 470);
+     str1=optimize(newArray);str2=optimize(newArray1);
+        if(!(str1.equals("FE FF FF") || str2.equals("FE FF FF"))){
+        if(start2==(end1+1)){
+         if(!(start3==0 && end3==0)){//checks is there any other partition or there are just two partitions?
+             newArray = Arrays.copyOfRange(parts, 479, 482); newArray1=Arrays.copyOfRange(parts, 483, 486);
+     str1=optimize(newArray);str2=optimize(newArray1);
+    if(!(str1.equals("FE FF FF") || str2.equals("FE FF FF"))){
              if(start3==(end2+1)){
-                 if(!(start4==end4 && start4==0 && end4==0)){//checks is there any other partition or there are just three partitions?
+                 if(!(start4==0 && end4==0)){//checks is there any other partition or there are just three partitions?
+                     newArray = Arrays.copyOfRange(parts, 495, 498);newArray1=Arrays.copyOfRange(parts, 499, 502);
+     str1=optimize(newArray);str2=optimize(newArray1);
+      if(!(str1.equals("FE FF FF") || str2.equals("FE FF FF"))){
                      if(start4==(end3+1)){
                          System.out.println("MBR is Uncorrupted \n");
                      }else System.out.println("MBR is Corrupted \n");
+                     }else System.out.println("MBR is Uncorrupted \n");
                  }else System.out.println("MBR is Uncorrupted \n");
              }else System.out.println("MBR is Corrupted \n");
+            }else System.out.println("MBR is Uncorrupted \n");
          }else System.out.println("MBR is Uncorrupted \n");
      }else System.out.println("MBR is Corrupted \n");
+    }else System.out.println("MBR is Uncorrupted \n");
  }else System.out.println("MBR is Uncorrupted \n");
  
  
@@ -252,9 +264,9 @@ if(!(parts[466].equals("00")))
  }
  
 
-//Size of the Disk
+//Total Allocated Space
 size=(((a+b+c+d)*512)/1024)/1024;
-        System.out.println("Total Disk Size: "+size+" MB");
+        System.out.println("Total Allocated Space: "+size+" MB");
 } 
     }
     
@@ -404,8 +416,8 @@ public static long sector(String[] newArray){
         sec=sec.substring(2); //removes 2 most significant bits from sector value
         
         String cylinder = msb+hex2binary(newArray[2]);//attaches msb at the start of the binary value of cylinder
-        int s=Integer.parseInt(sec,2);// calculates sector value in decimal
-        int c=Integer.parseInt(cylinder,2);//calculates cylinder value in decimal
+        long s=Integer.parseInt(sec,2);// calculates sector value in decimal
+        long c=Integer.parseInt(cylinder,2);//calculates cylinder value in decimal
         return (((c*255)+hex2decimal(newArray[0]))*63)+(s-1);// returns sector number
     }
 }
