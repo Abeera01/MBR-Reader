@@ -38,7 +38,9 @@ public class ForensicTool {
     catch (InputMismatchException a){
 
     System.out.println("Drive Number Format is incorrect");
-    System.exit(0);
+    System.out.println("Press Enter to Exit");
+        System.in.read();
+        System.exit(0);
 
 }
     String driveName=DriveName.toString();
@@ -267,6 +269,8 @@ if(!(parts[466].equals("00")))
 //Total Allocated Space
 size=(((a+b+c+d)*512)/1024)/1024;
         System.out.println("Total Allocated Space: "+size+" MB");
+        System.out.println("Press Enter to Exit");
+        System.in.read();
 } 
     }
     
@@ -453,6 +457,8 @@ try{
 }
 catch(FileNotFoundException e)
 {System.out.println("No Such drive exists");
+System.out.println("Press Enter to Exit");
+System.in.read();
 System.exit(0);
 }
         s=result.toString();
